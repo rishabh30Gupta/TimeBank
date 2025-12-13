@@ -7,7 +7,7 @@ import { FileText, Repeat, CheckCircle } from "lucide-react";
 
 const stats = [
   { value: "2,847", label: "Active IOUs" },
-  { value: "156K", label: "Skill Points Traded" },
+  { value: "156K", label: "Reputation Points Earned" },
   { value: "98.2%", label: "Completion Rate" },
   { value: "1,203", label: "Active Users" },
 ];
@@ -39,7 +39,7 @@ const Index = () => {
         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 pointer-events-none select-none">
           <ChronoRaven className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] text-foreground/[0.04]" />
         </div>
-        
+
         {/* Ghosted IOU cards - right side balance */}
         <div className="absolute right-8 md:right-16 lg:right-24 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-3 pointer-events-none select-none">
           {/* Ghost card 1 */}
@@ -53,7 +53,7 @@ const Index = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Ghost card 2 - offset */}
           <div className="w-64 lg:w-72 h-28 rounded-lg border border-border/15 bg-surface/20 backdrop-blur-sm opacity-25 -translate-x-2">
             <div className="p-4 space-y-2">
@@ -65,7 +65,7 @@ const Index = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Ghost card 3 - most faded */}
           <div className="w-64 lg:w-72 h-28 rounded-lg border border-border/10 bg-surface/10 backdrop-blur-sm opacity-15 translate-x-8">
             <div className="p-4 space-y-2">
@@ -74,14 +74,14 @@ const Index = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="max-w-2xl relative z-10">
           <h1 className="text-4xl md:text-5xl font-semibold text-foreground leading-tight tracking-tight mb-6 opacity-0 animate-fade-in-up">
             Trade Future Work,
             <br />
             Get Help Today
           </h1>
-          
+
           <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-lg opacity-0 animate-fade-in-up animate-delay-100">
             No money needed. Create work promises (IOUs) as NFTs and trade them for help right now.
           </p>
