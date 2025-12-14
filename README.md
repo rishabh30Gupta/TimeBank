@@ -249,7 +249,7 @@ npm run dev
 
 Watch the complete walkthrough of TimeBank's features:
 
-https://github.com/user-attachments/assets/Demo_Video.mp4
+https://github.com/rishabh30Gupta/future-work-exchange/raw/develop/Demo_Video.mp4
 
 ### Demo Mode
 
