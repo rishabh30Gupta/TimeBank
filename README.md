@@ -245,6 +245,12 @@ npm run dev
 
 ## 🎥 Demo
 
+### Demo Video
+
+Watch the complete walkthrough of TimeBank's features:
+
+https://github.com/user-attachments/assets/Demo_Video.mp4
+
 ### Demo Mode
 
 For demonstration purposes, the app uses **mock data** and **localStorage** to showcase features without requiring:
