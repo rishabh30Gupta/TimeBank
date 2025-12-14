@@ -146,4 +146,59 @@
   .animate-delay-200 { animation-delay: 200ms; }
   .animate-delay-300 { animation-delay: 300ms; }
   .animate-delay-400 { animation-delay: 400ms; }
+
+  /* Fog/Mist animation */
+  @keyframes fog-drift {
+    0% {
+      transform: translateX(0) translateY(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateX(-100px) translateY(-20px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes fog-drift-reverse {
+    0% {
+      transform: translateX(0) translateY(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    90% {
+      opacity: 0.2;
+    }
+    100% {
+      transform: translateX(100px) translateY(20px);
+      opacity: 0;
+    }
+  }
+
+  .animate-fog-1 {
+    animation: fog-drift 8s ease-in-out infinite;
+  }
+
+  .animate-fog-2 {
+    animation: fog-drift-reverse 10s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .animate-fog-3 {
+    animation: fog-drift 12s ease-in-out infinite;
+    animation-delay: 4s;
+  }
 }

@@ -35,9 +35,26 @@ const Index = () => {
     <div className="min-h-screen gradient-subtle">
       {/* Hero Section */}
       <section className="container mx-auto px-6 pt-24 pb-20 relative overflow-hidden">
-        {/* Subtle Chrono Raven - anchored right, partially cropped */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 pointer-events-none select-none">
-          <ChronoRaven className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] text-foreground/[0.04]" />
+        {/* Cosmic Raven with Fog - anchored right */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none hidden md:block">
+          {/* Fog layers */}
+          <div className="absolute inset-0">
+            {/* Fog 1 */}
+            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-blue-500/60 via-blue-400/40 to-transparent rounded-full blur-[100px] animate-fog-1" />
+
+            {/* Fog 2 */}
+            <div className="absolute top-1/2 right-1/3 w-[500px] h-[500px] bg-gradient-to-tl from-cyan-500/50 via-blue-500/40 to-transparent rounded-full blur-[120px] animate-fog-2" />
+
+            {/* Fog 3 */}
+            <div className="absolute bottom-1/4 right-1/2 w-[450px] h-[450px] bg-gradient-to-tr from-indigo-500/60 via-blue-600/40 to-transparent rounded-full blur-[110px] animate-fog-3" />
+          </div>
+
+          {/* Cosmic Raven */}
+          <img
+            src="/cosmic-raven.png"
+            alt="Cosmic Raven"
+            className="w-[350px] h-[450px] lg:w-[400px] lg:h-[500px] object-contain opacity-100 mix-blend-lighten relative z-10"
+          />
         </div>
 
         {/* Ghosted IOU cards - right side balance */}

@@ -7,11 +7,15 @@ export interface MockIOU {
   description: string;
   hours: number;
   category: string;
+  creatorSkill?: string; // What the creator offers in exchange
   deadline: string;
   collateral: string;
-  status: 'pending' | 'accepted' | 'completed' | 'disputed' | 'false_claim';
+  status: 'pending' | 'accepted' | 'completed' | 'disputed' | 'false_claim' | 'redeemed';
   creatorConfirmed: boolean;
   holderConfirmed: boolean;
+  redemptionRequested?: boolean; // Holder wants to redeem
+  creatorDeliveredRedemption?: boolean; // Creator delivered redemption work
+  holderConfirmedRedemption?: boolean; // Holder confirmed receiving redemption work
   createdAt: string;
   creatorReputation: number;
 }
@@ -510,7 +514,16 @@ const STORAGE_KEY = 'timebank_mock_ious';
 
 // Get all IOUs
 export const getMockIOUs = (): MockIOU[] => {
-  // Force reload with new 30 IOUs (clear old data)
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      // Return existing data (preserves user-created IOUs)
+      return JSON.parse(stored);
+    } catch (error) {
+      console.error('Error parsing stored IOUs:', error);
+    }
+  }
+  // Only initialize with 30 IOUs if localStorage is empty
   localStorage.setItem(STORAGE_KEY, JSON.stringify(mockIOUs));
   return mockIOUs;
 };
@@ -591,3 +604,41 @@ export const getMockReputation = (address: string) => {
     tier: completed >= 25 ? 'Expert' : completed >= 10 ? 'Verified' : completed >= 5 ? 'Trusted' : 'Beginner',
   };
 };
+
+// Request redemption (holder wants to use the IOU)
+export const requestMockRedemption = (id: string): MockIOU | null => {
+  return updateMockIOU(id, { redemptionRequested: true });
+};
+
+// Creator confirms delivering redemption work
+export const creatorConfirmRedemption = (id: string): MockIOU | null => {
+  const ious = getMockIOUs();
+  const iou = ious.find(i => i.id === id);
+  if (!iou) return null;
+
+  const updates: Partial<MockIOU> = { creatorDeliveredRedemption: true };
+  
+  // If holder already confirmed, mark as redeemed
+  if (iou.holderConfirmedRedemption) {
+    updates.status = 'redeemed';
+  }
+  
+  return updateMockIOU(id, updates);
+};
+
+// Holder confirms receiving redemption work
+export const holderConfirmRedemption = (id: string): MockIOU | null => {
+  const ious = getMockIOUs();
+  const iou = ious.find(i => i.id === id);
+  if (!iou) return null;
+
+  const updates: Partial<MockIOU> = { holderConfirmedRedemption: true };
+  
+  // If creator already delivered, mark as redeemed
+  if (iou.creatorDeliveredRedemption) {
+    updates.status = 'redeemed';
+  }
+  
+  return updateMockIOU(id, updates);
+};
+

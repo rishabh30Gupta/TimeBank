@@ -44,25 +44,19 @@ const MyIOUs = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       const updated = confirmMockCompletion(iouId, isCreator);
 
-      toast({
-        title: "Confirmed! ✅",
-        description: "Waiting for other party to confirm...",
-      });
-
-      // Auto-complete after 3 seconds (simulate other party confirming)
-      setTimeout(async () => {
-        const finalUpdate = confirmMockCompletion(iouId, !isCreator);
-
-        if (finalUpdate?.status === 'completed') {
-          toast({
-            title: "Work Completed! 🎉",
-            description: "Both parties confirmed! Collateral returned + 20 reputation earned!",
-          });
-
-          // Reload to show updated status
-          loadMyIOUs();
-        }
-      }, 3000);
+      if (updated?.status === 'completed') {
+        // Both parties have confirmed!
+        toast({
+          title: "Work Completed! 🎉",
+          description: "Both parties confirmed! Collateral returned + 20 reputation earned!",
+        });
+      } else {
+        // Only one party confirmed so far
+        toast({
+          title: "Confirmed! ✅",
+          description: "Waiting for other party to confirm...",
+        });
+      }
 
       loadMyIOUs();
     } catch (error) {
@@ -134,6 +128,58 @@ const MyIOUs = () => {
     }
   };
 
+  const handleRequestRedemption = async (iouId: string) => {
+    try {
+      toast({
+        title: "Requesting Redemption...",
+        description: "Asking creator to deliver promised work...",
+      });
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { requestMockRedemption } = await import('@/lib/mockData');
+      requestMockRedemption(iouId);
+
+      toast({
+        title: "Redemption Requested! 💼",
+        description: "Creator will be notified to deliver the work they promised.",
+      });
+
+      loadMyIOUs();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to request redemption",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleConfirmRedemption = async (iouId: string) => {
+    try {
+      toast({
+        title: "Confirming Redemption...",
+        description: "Marking work as delivered...",
+      });
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { creatorConfirmRedemption } = await import('@/lib/mockData');
+      creatorConfirmRedemption(iouId);
+
+      toast({
+        title: "IOU Redeemed! 🎉",
+        description: "Creator delivered the promised work. IOU is now fully completed!",
+      });
+
+      loadMyIOUs();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to confirm redemption",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const styles = {
       pending: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
@@ -141,6 +187,7 @@ const MyIOUs = () => {
       completed: "bg-green-500/10 text-green-500 border-green-500/20",
       disputed: "bg-red-500/10 text-red-500 border-red-500/20",
       false_claim: "bg-red-500/10 text-red-500 border-red-500/20",
+      redeemed: "bg-purple-500/10 text-purple-500 border-purple-500/20",
     };
     const labels = {
       pending: "Pending",
@@ -148,6 +195,7 @@ const MyIOUs = () => {
       completed: "Completed",
       disputed: "Disputed",
       false_claim: "False Claim",
+      redeemed: "Redeemed",
     };
     return (
       <span className={`px-2 py-1 rounded-full text-xs border ${styles[status as keyof typeof styles] || styles.pending}`}>
@@ -262,9 +310,25 @@ const MyIOUs = () => {
                     )}
 
                     {iou.status === 'completed' && (
-                      <div className="flex items-center gap-2 text-sm text-green-500 mt-4">
-                        <CheckCircle className="w-4 h-4" />
-                        Completed! +20 reputation earned
+                      <div className="mt-4">
+                        <div className="flex items-center gap-2 text-sm text-green-500 mb-3">
+                          <CheckCircle className="w-4 h-4" />
+                          Completed! +20 reputation earned
+                        </div>
+                        {iou.redemptionRequested && !iou.creatorDeliveredRedemption && (
+                          <div className="space-y-2">
+                            <div className="text-sm text-orange-500">
+                              ⚠️ Holder requested redemption: Deliver {iou.hours} hours of {iou.creatorSkill || 'work'}
+                            </div>
+                            <Button
+                              onClick={() => handleConfirmRedemption(iou.id)}
+                              size="sm"
+                              variant="default"
+                            >
+                              Confirm Delivered
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -357,9 +421,30 @@ const MyIOUs = () => {
                     )}
 
                     {iou.status === 'completed' && (
-                      <div className="flex items-center gap-2 text-sm text-green-500 mt-4">
-                        <CheckCircle className="w-4 h-4" />
-                        Completed! +20 reputation earned
+                      <div className="mt-4">
+                        <div className="flex items-center gap-2 text-sm text-green-500 mb-3">
+                          <CheckCircle className="w-4 h-4" />
+                          Completed! +20 reputation earned
+                        </div>
+                        {iou.creatorSkill && !iou.redemptionRequested && (
+                          <div className="space-y-2">
+                            <div className="text-sm text-muted-foreground">
+                              💼 You can now redeem: {iou.hours} hours of {iou.creatorSkill}
+                            </div>
+                            <Button
+                              onClick={() => handleRequestRedemption(iou.id)}
+                              size="sm"
+                              variant="default"
+                            >
+                              Request Redemption
+                            </Button>
+                          </div>
+                        )}
+                        {iou.redemptionRequested && !iou.creatorDeliveredRedemption && (
+                          <div className="text-sm text-blue-500">
+                            ⏳ Redemption requested - waiting for creator to deliver...
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -374,6 +459,13 @@ const MyIOUs = () => {
                       <div className="flex items-center gap-2 text-sm text-red-500 mt-4">
                         <AlertTriangle className="w-4 h-4" />
                         Under dispute - Admin reviewing
+                      </div>
+                    )}
+
+                    {iou.status === 'redeemed' && (
+                      <div className="flex items-center gap-2 text-sm text-purple-500 mt-4">
+                        <CheckCircle className="w-4 h-4" />
+                        IOU Fully Redeemed! Lifecycle complete 🎉
                       </div>
                     )}
                   </div>

@@ -176,6 +176,11 @@ const Marketplace = () => {
                     <h3 className="text-lg font-medium text-foreground mb-2">
                       {iou.description}
                     </h3>
+                    {iou.creatorSkill && (
+                      <div className="mb-2 text-sm text-primary">
+                        💼 Creator offers: {iou.creatorSkill}
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />

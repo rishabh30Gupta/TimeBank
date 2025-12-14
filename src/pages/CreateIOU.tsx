@@ -23,6 +23,7 @@ const CreateIOU = () => {
   const [description, setDescription] = useState("");
   const [hours, setHours] = useState("");
   const [category, setCategory] = useState<string>("");
+  const [creatorSkill, setCreatorSkill] = useState<string>("");
   const [deadlineDays, setDeadlineDays] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
@@ -96,6 +97,7 @@ const CreateIOU = () => {
         description,
         hours: hoursNum,
         category: skillCategories[parseInt(category)]?.label || 'Basic',
+        creatorSkill: creatorSkill || 'General Services', // What creator offers
         deadline: new Date(Date.now() + deadlineDaysNum * 24 * 60 * 60 * 1000).toISOString(),
         collateral: collateralInEth.toFixed(2),
         status: 'pending',
@@ -128,7 +130,25 @@ const CreateIOU = () => {
 
   return (
     <div className="min-h-screen gradient-subtle">
-      <div className="container mx-auto px-6 py-16">
+      <div className="container mx-auto px-6 py-16 relative">
+        {/* Moon Raven - Right side, circular, mirrored */}
+        <div className="absolute right-8 top-32 pointer-events-none select-none hidden lg:block">
+          {/* Subtle fog around moon */}
+          <div className="absolute inset-0">
+            <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-gradient-to-br from-blue-500/30 via-cyan-400/20 to-transparent rounded-full blur-[80px] animate-fog-1" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-tl from-indigo-500/25 via-blue-500/20 to-transparent rounded-full blur-[90px] animate-fog-2" />
+          </div>
+
+          {/* Rounded rectangle moon/raven image - mirrored with glow */}
+          <div className="relative z-10 w-[350px] h-[700px] rounded-2xl overflow-hidden border border-border/30 shadow-[0_0_15px_rgba(59,130,246,0.08),0_0_30px_rgba(99,102,241,0.05)]">
+            <img
+              src="/moon-raven.png"
+              alt="Moon Raven"
+              className="w-full h-full object-cover scale-x-[-1]"
+            />
+          </div>
+        </div>
+
         <div className="max-w-lg">
           <h1 className="text-2xl font-semibold text-foreground mb-2 opacity-0 animate-fade-in-up">
             Create IOU
@@ -200,6 +220,25 @@ const CreateIOU = () => {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Creator Skill - What you offer in exchange */}
+              <div className="space-y-2">
+                <Label htmlFor="creatorSkill" className="text-sm font-medium text-foreground">
+                  Your Skill (What you offer in exchange)
+                </Label>
+                <Input
+                  id="creatorSkill"
+                  type="text"
+                  placeholder="e.g., Web Development, Graphic Design, Writing..."
+                  value={creatorSkill}
+                  onChange={(e) => setCreatorSkill(e.target.value)}
+                  className="bg-input border-border/60 focus:border-primary/60"
+                  disabled={isCreating}
+                />
+                <p className="text-xs text-muted-foreground">
+                  This is what you'll provide when someone redeems your IOU
+                </p>
               </div>
 
               {/* Deadline */}
